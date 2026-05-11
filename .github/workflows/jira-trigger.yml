@@ -1,8 +1,12 @@
 name: Jira Trigger Pipeline
 
 on:
-  repository_dispatch:
-    types: [jira-status-update]
+  workflow_dispatch:
+    inputs:
+      issue:
+        required: true
+      status:
+        required: true
 
 jobs:
   build:
