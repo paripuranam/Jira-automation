@@ -1,0 +1,23 @@
+name: Jira Trigger Pipeline
+
+on:
+  repository_dispatch:
+    types: [jira-status-update]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Print Jira Details
+        run: |
+          echo "Triggered from Jira"
+          echo "Issue Key: ${{ github.event.client_payload.issue }}"
+          echo "Status: ${{ github.event.client_payload.status }}"
+
+      - name: Run Pipeline
+        run: |
+          echo "Pipeline started automatically"
