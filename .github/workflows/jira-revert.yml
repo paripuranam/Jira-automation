@@ -1,38 +1,52 @@
-name: Revert Test Branch
-
+name: Jira Revert Branch
 on:
   workflow_dispatch:
     inputs:
       branch:
         required: true
+        description: "Branch to revert last commit on"
+      issue:
+        required: false
+        description: "Jira issue key"
 
 jobs:
   rollback:
     runs-on: ubuntu-latest
-
     permissions:
       contents: write
-
     steps:
       - name: Checkout Branch
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.branch }}
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Configure Git
         run: |
           git config user.name "paripuranam"
           git config user.email "paripuranam333@gmail.com"
 
+      - name: Show Current HEAD Before Revert
+        run: |
+          echo "Reverting branch: ${{ github.event.inputs.branch }}"
+          echo "Current HEAD:"
+          git log --oneline -3
+
       - name: Revert Last Commit
         run: |
           git revert HEAD --no-edit
 
-      - name: Add Skip CI
+      - name: Amend Commit Message
         run: |
-          git commit --amend -m "Rollback from Jira [skip ci]"
+          git commit --amend -m "revert: rollback triggered by Jira ${{ github.event.inputs.issue }} [skip ci]"
 
-      - name: Push Changes
+      - name: Push Reverted Changes
         run: |
           git push origin ${{ github.event.inputs.branch }}
+
+      - name: Summary
+        run: |
+          echo "✅ Successfully reverted last commit on ${{ github.event.inputs.branch }}"
+          echo "Jira Issue: ${{ github.event.inputs.issue }}"
+          git log --oneline -3
