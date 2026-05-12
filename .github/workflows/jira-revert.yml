@@ -2,16 +2,22 @@ name: Revert Test Branch
 
 on:
   workflow_dispatch:
+    inputs:
+      branch:
+        required: true
 
 jobs:
   rollback:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
-      - name: Checkout Test Branch
+      - name: Checkout Branch
         uses: actions/checkout@v4
         with:
-          ref: test
+          ref: ${{ github.event.inputs.branch }}
           fetch-depth: 0
 
       - name: Configure Git
@@ -29,4 +35,4 @@ jobs:
 
       - name: Push Changes
         run: |
-          git push origin test
+          git push origin ${{ github.event.inputs.branch }}
