@@ -16,8 +16,8 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config user.name "jira-bot"
-          git config user.email "jira-bot@example.com"
+          git config user.name "paripuranam"
+          git config user.email "paripuranam333@gmail.com"
 
       - name: Revert Last Commit
         run: |
